@@ -24,21 +24,18 @@ const MainHicks = styled.div`
 		cursor: pointer;
 		transition: background 0.2s;
 	}
-	
-    button:hover { 
-        background-color: #333; 
-    }
+	button:hover { background-color: #333; }
 
-	.texto-opcao { 
-        margin-top: 24px; 
-    }
+	.texto-opcao { margin-top: 24px; }
 
 	.grid {
 		display: flex;
         box-sizing: border-box;
         flex-wrap: wrap;
         width: 100%;
-        height: 100%;  
+        height: auto;
+        gap: 10px;
+
 	}
 
 	.item {
@@ -54,8 +51,8 @@ const MainHicks = styled.div`
 	}
 `;
 
-const LeiHicks = () => {
-	const [opcoes, setOpcoes] = useState(4);
+const LeiHicks = () =>{
+	const [opcoes, setOpcoes] = useState(6);
 
 	// Hick's Law: T = a + b * log2(n + 1)
 	const a = 250; // ms
@@ -65,38 +62,30 @@ const LeiHicks = () => {
 		[opcoes]
 	);
 
-	// variações determinísticas por opção (±20%)
-	const variacoes = useMemo(() => {
-		const jitter = (i: number) => {
-			const r = Math.abs(Math.sin((i + 1) * 12.9898) * 43758.5453) % 1;
-			return (r - 0.5) * 0.4; // -0.2 .. +0.2  (±20%)
-		};
-		return Array.from({ length: opcoes }, (_, i) => jitter(i));
-	}, [opcoes]);
-
-	// ms por botão (base * (1 + variação[i])), com limites
-	const msPorOpcao = useMemo(
-		() =>
-			Array.from({ length: opcoes }, (_, i) =>
-				Math.max(50, Math.round(tempoBase * (1 + variacoes[i])))
-			),
-		[opcoes, tempoBase, variacoes]
-	);
+	// Critério: "quanto mais distante do primeiro botão, maior o ms"
+	// i = 0 → +0%; i = n-1 → +AUMENTO_MAX
+	const AUMENTO_MAX = 0.40; // +40% no mais distante (ajuste se quiser)
+	const msPorOpcao = useMemo(()=>{
+		if (opcoes <= 1) return [tempoBase];
+		const maxIndex = opcoes - 1;
+		return Array.from({ length: opcoes }, (_, i) => {
+			const fracDist = i / maxIndex;                // 0 .. 1
+			const fator = 1 + fracDist * AUMENTO_MAX;     // 1.00 .. 1.40
+			return Math.max(50, Math.round(tempoBase * fator));
+		});
+	}, [opcoes, tempoBase]);
 
 	const [escolha, setEscolha] = useState<string | null>(null);
 	const [delaySelecionado, setDelaySelecionado] = useState<number | null>(null);
 	const [mensagem, setMensagem] = useState("");
 
-	// sempre que a escolha + delay mudarem, agenda a mensagem com o atraso da opção
-	useEffect(() => {
+	useEffect(()=>{
 		if (!escolha || !delaySelecionado) return;
 		setMensagem(`Processando ${escolha}…`);
-		const t = setTimeout(() => {
-			setMensagem(
-				`Você escolheu a ${escolha}. (Tempo estimado: ${delaySelecionado} ms)`
-			);
+		const t = setTimeout(()=>{
+			setMensagem(`Você escolheu a ${escolha}. (Tempo estimado: ${delaySelecionado} ms)`);
 		}, delaySelecionado);
-		return () => clearTimeout(t);
+		return ()=> clearTimeout(t);
 	}, [escolha, delaySelecionado]);
 
 	return (
@@ -109,7 +98,7 @@ const LeiHicks = () => {
 				min={2}
 				max={20}
 				value={opcoes}
-				onChange={(e) => {
+				onChange={(e)=>{
 					setOpcoes(parseInt(e.target.value));
 					setEscolha(null);
 					setDelaySelecionado(null);
@@ -117,20 +106,18 @@ const LeiHicks = () => {
 				}}
 			/>
 
-			<p>
-				Tempo base pela Lei de Hick (n={opcoes}): <b>{tempoBase} ms</b>
-			</p>
+			<p>Tempo base (Lei de Hick) para n={opcoes}: <b>{tempoBase} ms</b></p>
 
 			<div className="grid">
-				{Array.from({ length: opcoes }).map((_, i) => (
+				{Array.from({ length: opcoes }).map((_, i)=>(
 					<div key={i} className="item">
 						<button
-							onClick={() => {
-								setEscolha(`Opção ${i + 1}`);
+							onClick={()=>{
+								setEscolha(`Opção ${i+1}`);
 								setDelaySelecionado(msPorOpcao[i]);
 							}}
 						>
-							Opção {i + 1}
+							Opção {i+1}
 						</button>
 						<span className="ms">~ {msPorOpcao[i]} ms</span>
 					</div>
@@ -142,4 +129,4 @@ const LeiHicks = () => {
 	);
 }
 
-export default LeiHicks;
+export default LeiHicks

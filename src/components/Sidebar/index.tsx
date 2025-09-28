@@ -5,9 +5,9 @@ const MenuLateral = styled.aside`
     display: flex;
     boxsizing: border-box;
     flex-direction: column;
-    width: 260px
-    max-width: 260px;
-    min-width: 260px;
+    width: 280px
+    max-width: 280px;
+    min-width: 280px;
     background-color: #444;
     color: #ffffff;
     align-items: start;

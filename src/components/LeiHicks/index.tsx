@@ -54,7 +54,7 @@ const MainHicks = styled.div`
 	}
 `;
 
-export default function LeiHicks() {
+const LeiHicks = () => {
 	const [opcoes, setOpcoes] = useState(4);
 
 	// Hick's Law: T = a + b * log2(n + 1)
@@ -67,7 +67,6 @@ export default function LeiHicks() {
 
 	// variações determinísticas por opção (±20%)
 	const variacoes = useMemo(() => {
-		// função pseudo-determinística baseada no índice
 		const jitter = (i: number) => {
 			const r = Math.abs(Math.sin((i + 1) * 12.9898) * 43758.5453) % 1;
 			return (r - 0.5) * 0.4; // -0.2 .. +0.2  (±20%)
@@ -142,3 +141,5 @@ export default function LeiHicks() {
 		</MainHicks>
 	);
 }
+
+export default LeiHicks;

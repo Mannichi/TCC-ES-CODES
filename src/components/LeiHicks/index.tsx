@@ -53,7 +53,6 @@ const MainHicks = styled.div`
 
 const LeiHicks = () =>{
 	const [opcoes, setOpcoes] = useState(6);
-
 	// Hick's Law: T = a + b * log2(n + 1)
 	const a = 250; // ms
 	const b = 150; // ms/bit
@@ -61,16 +60,15 @@ const LeiHicks = () =>{
 		() => Math.round(a + b * Math.log2(opcoes + 1)),
 		[opcoes]
 	);
-
 	// Critério: "quanto mais distante do primeiro botão, maior o ms"
 	// i = 0 → +0%; i = n-1 → +AUMENTO_MAX
-	const AUMENTO_MAX = 0.40; // +40% no mais distante (ajuste se quiser)
+	const aumento_maximo = 0.40; // +40% no mais distante (ajuste se quiser)
 	const msPorOpcao = useMemo(()=>{
 		if (opcoes <= 1) return [tempoBase];
 		const maxIndex = opcoes - 1;
 		return Array.from({ length: opcoes }, (_, i) => {
 			const fracDist = i / maxIndex;                // 0 .. 1
-			const fator = 1 + fracDist * AUMENTO_MAX;     // 1.00 .. 1.40
+			const fator = 1 + fracDist * aumento_maximo;     // 1.00 .. 1.40
 			return Math.max(50, Math.round(tempoBase * fator));
 		});
 	}, [opcoes, tempoBase]);

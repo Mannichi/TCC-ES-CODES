@@ -27,7 +27,7 @@ const Cartao = styled.div`
 
 const Titulo = styled.h1`
 	font-size: 28px;
-	font-weight: 700;ss
+	font-weight: 700;
 	margin-bottom: 6px;
 `;
 

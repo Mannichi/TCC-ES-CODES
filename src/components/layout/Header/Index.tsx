@@ -3,7 +3,7 @@ import logo from "../../../assets/logo-mba.webp"
 
 const HeaderMain = styled.header`
     display: flex;
-    boxsizing: border-box;
+    box-sizing: border-box;
     width: 100vw;
     min-width: 100vw;
     height: 80px;

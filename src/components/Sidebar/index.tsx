@@ -3,7 +3,7 @@ import styled from "styled-components"
 
 const MenuLateral = styled.aside`
     display: flex;
-    boxsizing: border-box;
+    box-sizing: border-box;
     flex-direction: column;
     width: 280px
     max-width: 280px;

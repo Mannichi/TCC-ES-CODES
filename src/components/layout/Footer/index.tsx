@@ -2,7 +2,7 @@ import styled from "styled-components"
 
 const FooterMain = styled.footer`
     display: flex;
-    boxsizing: border-box;
+    box-sizing: border-box;
     width: 100vw;
     height: 50px;
     background-color: #000000;
